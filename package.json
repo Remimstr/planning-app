@@ -1,0 +1,25 @@
+{
+  "name": "planning-app-api",
+  "version": "0.1.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Remimstr/planning-app-api.git"
+  },
+  "main": "server.js",
+  "scripts": {
+    "server": "nodemon server.js"
+  },
+  "dependencies": {
+    "body-parser": "*",
+    "ejs": "^2.4.2",
+    "express": "*",
+    "mongoose": "4.11.1",
+    "morgan": "*",
+    "nconf": "*",
+    "neo4j-driver": "*"
+  },
+  "devDependencies": {
+    "nodemon": "1.11.0"
+  }
+}
