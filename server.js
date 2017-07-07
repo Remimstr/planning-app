@@ -5,13 +5,12 @@
 
 // call the packages we need
 var express     = require('express'),
-    app         = express(),
-    bodyParser  = require('body-parser'),
-    neo4j       = require('neo4j-driver').v1;
+  app           = express(),
+  bodyParser    = require('body-parser');
 
 // custom modules
 var nconf       = require('./config'),
-    routes      = require('./routes');
+  routes        = require('./routes');
 
 var neo4jSessionCleanup = require('./middlewares/neo4jSessionCleanup');
 
@@ -37,7 +36,7 @@ router.get('/', (req, res) => {
   res.json({ message: 'Hi there, welcome to the event-planning api!' });
 });
 
-router.get('/alice', routes.alice.Alice)
+router.get('/alice', routes.alice.Alice);
 
 // REGISTER OUR ROUTES ------------------------------------
 // all of our routes will be prefixed with with an api path

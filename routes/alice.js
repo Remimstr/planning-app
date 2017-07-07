@@ -1,8 +1,8 @@
 // alice.js
 var Alice =         require('../models/alice'),
-    dbUtils =       require('../neo4j/dbUtils'),
-    writeResponse = require('../helpers/response').writeResponse,
-    writeError =    require('../helpers/response').writeError;
+  dbUtils =         require('../neo4j/dbUtils'),
+  writeResponse =   require('../helpers/response').writeResponse;
+  // writeError =      require('../helpers/response').writeError;
 
 // Example route, this is where the request gets passed to
 // from the server.
