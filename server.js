@@ -38,6 +38,9 @@ router.get('/', (req, res) => {
 
 router.get('/alice', routes.alice.Alice);
 
+router.put('/event/create/final', routes.event.createFinal);
+router.put('/event/create', routes.event.create);
+
 // REGISTER OUR ROUTES ------------------------------------
 // all of our routes will be prefixed with with an api path
 app.use(nconf.get('api_path'), router);
