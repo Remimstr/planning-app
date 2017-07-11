@@ -36,10 +36,8 @@ router.get('/', (req, res) => {
   res.json({ message: 'Hi there, welcome to the event-planning api!' });
 });
 
-router.get('/alice', routes.alice.Alice);
-
-router.put('/event/create/final', routes.event.createFinal);
 router.put('/event/create', routes.event.create);
+router.get('/event/delete/all', routes.event.deleteAll);
 
 // REGISTER OUR ROUTES ------------------------------------
 // all of our routes will be prefixed with with an api path
