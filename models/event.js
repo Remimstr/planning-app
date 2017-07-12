@@ -1,5 +1,56 @@
 // A model for events
 
+var Event = require('./neo4j/event');
+
+/**
+ * Query Functions
+ */
+
+//  Returns many events as an array
+function manyEvents(neo4jResult) {
+  return neo4jResult.records.map(r => new Event(r.get('event')));
+}
+
+//  children: session, <Int>
+//  Returns all children for an event with Id of EventId
+var children = (session, eventId) => {
+  return session.run(
+    'MATCH (e:Event {id:{eventId}})-[:CHILD*]->(event) \
+    RETURN DISTINCT event',
+    {
+      eventId: eventId
+    })
+    .then(r => manyEvents(r));
+};
+//  parents: session, <Int>
+//  Returns all parents for an event with Id of EventId
+var parents = (session, eventId) => {
+  return session.run(
+    'MATCH (e:Event {id:{eventId}})<-[:CHILD]-(event) \
+    RETURN DISTINCT event',
+    {
+      eventId: eventId
+    })
+    .then(r => manyEvents(r));
+};
+
+//  create: session, <Int>, <Int>, <Str>, <Int>
+//  This function consumes an eventId, a name, a date,
+//  and an eventId. It creates a new event which is the
+//  child of an existing event. Then, it rebalances the
+//  tree.
+var create = (session, newEventId, name, date) => {
+  return session.run(
+    'CREATE (n:Event {id:{newEventId}, name:{name}, \
+    date:{date}}) RETURN n',
+    {
+      newEventId: newEventId,
+      name: name,
+      date: date
+    }
+  );
+};
+
 // connectToChild: session, <Int>, <Int>
 // This function consumes two event ids. It connects
 // the first event to the second using the '[:CHILD]'
@@ -53,23 +104,6 @@ var reconnectParent = function (session, childEventId, parentEventId) {
   );
 };
 
-//  create: session, <Int>, <Int>, <Str>, <Int>
-//  This function consumes an eventId, a name, a date,
-//  and an eventId. It creates a new event which is the
-//  child of an existing event. Then, it rebalances the
-//  tree.
-var create = (session, newEventId, name, date) => {
-  return session.run(
-    'CREATE (n:Event {id:{newEventId}, name:{name}, \
-    date:{date}}) RETURN n',
-    {
-      newEventId: newEventId,
-      name: name,
-      date: date
-    }
-  );
-};
-
 // deleteAll: session
 // Deletes all events
 var deleteAll = (session) => {
@@ -80,6 +114,8 @@ var deleteAll = (session) => {
 
 // Export all functions to make them available
 module.exports = {
+  children: children,
+  parents: parents,
   create: create,
   connectToChild: connectToChild,
   connectToPAC: connectToPAC, 

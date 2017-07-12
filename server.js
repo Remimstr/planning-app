@@ -36,6 +36,8 @@ router.get('/', (req, res) => {
   res.json({ message: 'Hi there, welcome to the event-planning api!' });
 });
 
+router.get('/event/:eventId/children', routes.event.getChildren);
+router.get('/event/:eventId/parents',  routes.event.getParents);
 router.put('/event/create', routes.event.create);
 router.get('/event/delete/all', routes.event.deleteAll);
 

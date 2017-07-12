@@ -53,9 +53,27 @@ exports.create = (req, res, next) => {
 
 };
 
+// gets all children of an event
+exports.getChildren = (req, res, next) => {
+  console.log('get children');
+  var curr = Number(req.params.eventId);
+  Events.children(dbUtils.getSession(req), curr)
+    .then(response => writeResponse(res, response))
+    .catch(next);
+};
+
+// gets all parents of an event
+exports.getParents = (req, res, next) => {
+  console.log('get parents');
+  var curr = Number(req.params.eventId);
+  Events.parents(dbUtils.getSession(req), curr)
+    .then(response => writeResponse(res, response))
+    .catch(next);
+};
+
 // deletes all Event nodes and relationships
 exports.deleteAll = (req, res, next) => {
-  console.log('dete all');
+  console.log('delete all');
   Events.deleteAll(dbUtils.getSession(req))
     .then(response => writeResponse(res, response))
     .catch(next);
