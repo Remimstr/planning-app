@@ -1,10 +1,10 @@
 // A model for events
 
-// connect: session, <Int>, <Int>
+// connectToChild: session, <Int>, <Int>
 // This function consumes two event ids. It connects
 // the first event to the second using the '[:CHILD]'
 // connector.
-var connect = function (session, parentEventId, newEventId) {
+var connectToChild = function (session, parentEventId, newEventId) {
   return session.run(
     'MATCH (p:Event) WHERE p.id = {parentEventId} \
     MATCH (c:Event) WHERE c.id = {newEventId} \
@@ -16,11 +16,30 @@ var connect = function (session, parentEventId, newEventId) {
   );
 };
 
-// reconnect: session, <Int>, <Int>
+// connectToChildAndParent: session, <Int>, <Int>
+// This function consumes two event ids. It connects
+// the first event to the second using the '[:CHILD]'
+// connector.
+var connectToPAC = function (session, newEventId, parentEventId, childEventId) {
+  return session.run(
+    'MATCH (p:Event) WHERE p.id = {parentEventId} \
+    MATCH (curr:Event) WHERE curr.id = {newEventId} \
+    MATCH (c:Event) WHERE c.id = {childEventId} \
+    CREATE (p)-[:CHILD]->(curr) \
+    CREATE (curr)-[:CHILD]->(c) RETURN p, c, curr',
+    {
+      parentEventId: parentEventId,
+      newEventId: newEventId,
+      childEventId: childEventId
+    }
+  );
+};
+
+// reconnectParent: session, <Int>, <Int>
 // This function consumes two event ids. It connects
 // the [:CHILD] of the second event as the [:CHILD] of
 // the first and deletes the original relationship.
-var reconnect = function (session, childEventId, parentEventId) {
+var reconnectParent = function (session, childEventId, parentEventId) {
   return session.run(
     'MATCH (p:Event) WHERE p.id = {parentEventId} \
     MATCH (p)-[r:CHILD]->(c2) DELETE r WITH p, c2 \
@@ -62,7 +81,8 @@ var deleteAll = (session) => {
 // Export all functions to make them available
 module.exports = {
   create: create,
-  connect: connect,
-  reconnect: reconnect,
+  connectToChild: connectToChild,
+  connectToPAC: connectToPAC, 
+  reconnectParent: reconnectParent,
   deleteAll: deleteAll
 };

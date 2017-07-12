@@ -14,6 +14,9 @@ var Events =         require('../models/event'),
 // - nth Intermediate Node (1 parent)
 //    => Creates a node, becomes the child of parent,
 //       and becomes the parent of parent's child
+// - specific Intermediate node (1 child, 1 parent)
+//    => Creates a node, connects parent to node and
+//       connects node to child
 exports.create = (req, res, next) => {
   var date = Number(_.get(req.body, 'date')),
     name = (_.get(req.body, 'name')),
@@ -30,14 +33,20 @@ exports.create = (req, res, next) => {
   } else if (parent === null && child !== null) {
     console.log('first intermediate');
     Events.create(dbUtils.getSession(req), curr, name, date)
-      .then (Events.connect(dbUtils.getSession(req), curr, Number(child)))
+      .then (Events.connectToChild(dbUtils.getSession(req), curr, Number(child)))
       .then (response => writeResponse(res, response))
       .catch (next);
   // Scenario #3: nth Intermediate Node
   } else if (parent !== null && child === null) {
     console.log('nth intermediate');
     Events.create(dbUtils.getSession(req), curr, name, date)
-      .then (Events.reconnect(dbUtils.getSession(req), curr, Number(parent)))
+      .then (Events.reconnectParent(dbUtils.getSession(req), curr, Number(parent)))
+      .then (response => writeResponse(res, response))
+      .catch (next);
+  } else {
+    console.log('specific intermediate');
+    Events.create(dbUtils.getSession(req), curr, name, date)
+      .then (Events.connectToPAC(dbUtils.getSession(req), curr, Number(parent), Number(child)))
       .then (response => writeResponse(res, response))
       .catch (next);
   }
@@ -46,6 +55,7 @@ exports.create = (req, res, next) => {
 
 // deletes all Event nodes and relationships
 exports.deleteAll = (req, res, next) => {
+  console.log('dete all');
   Events.deleteAll(dbUtils.getSession(req))
     .then(response => writeResponse(res, response))
     .catch(next);
