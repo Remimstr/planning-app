@@ -1,5 +1,5 @@
-// alice.js
-var Events =         require('../models/event'),
+// events.js
+var Events =         require('../models/events'),
   _ =                require('lodash'),
   dbUtils =          require('../neo4j/dbUtils'),
   writeResponse =    require('../helpers/response').writeResponse;
@@ -22,7 +22,7 @@ exports.create = (req, res, next) => {
     name = (_.get(req.body, 'name')),
     child = (_.get(req.body, 'childId')) || null,
     parent = (_.get(req.body, 'parentId')) || null,
-    curr = Number(req.query.id);
+    curr = Number(req.params.eventId);
   // Scenario #1: Final Node
   if (parent === null && child === null) {
     console.log('final node');

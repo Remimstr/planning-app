@@ -22,6 +22,7 @@ var children = (session, eventId) => {
     })
     .then(r => manyEvents(r));
 };
+
 //  parents: session, <Int>
 //  Returns all parents for an event with Id of EventId
 var parents = (session, eventId) => {
@@ -36,9 +37,7 @@ var parents = (session, eventId) => {
 
 //  create: session, <Int>, <Int>, <Str>, <Int>
 //  This function consumes an eventId, a name, a date,
-//  and an eventId. It creates a new event which is the
-//  child of an existing event. Then, it rebalances the
-//  tree.
+//  and an eventId. It creates a new event.
 var create = (session, newEventId, name, date) => {
   return session.run(
     'CREATE (n:Event {id:{newEventId}, name:{name}, \

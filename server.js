@@ -36,10 +36,20 @@ router.get('/', (req, res) => {
   res.json({ message: 'Hi there, welcome to the event-planning api!' });
 });
 
-router.get('/event/:eventId/children', routes.event.getChildren);
-router.get('/event/:eventId/parents',  routes.event.getParents);
-router.put('/event/create', routes.event.create);
-router.get('/event/delete/all', routes.event.deleteAll);
+
+// Events -----------------------------------------------------------
+
+// gets
+router.get('/events/:eventId/children', routes.events.getChildren);
+router.get('/events/:eventId/parents',  routes.events.getParents);
+
+// creates
+router.put('/events/:eventId/create', routes.events.create);
+
+// general functions
+router.get('/events/all/delete', routes.events.deleteAll);
+
+// ------------------------------------------------------------------
 
 // REGISTER OUR ROUTES ------------------------------------
 // all of our routes will be prefixed with with an api path
