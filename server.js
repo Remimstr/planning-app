@@ -37,6 +37,20 @@ router.get('/', (req, res) => {
 });
 
 
+// Groups -----------------------------------------------------------
+
+// gets
+router.get('/groups/:groupId', routes.groups.get);
+
+// creates
+router.put('/groups/:groupId/create', routes.groups.create);
+
+// general functions
+router.get('/groups/all/get', routes.groups.getAll);
+router.get('/groups/all/delete', routes.groups.deleteAll);
+
+// ------------------------------------------------------------------
+
 // Events -----------------------------------------------------------
 
 // gets
