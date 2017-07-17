@@ -2,7 +2,8 @@
 var Groups =         require('../models/groups'),
   _ =                require('lodash'),
   dbUtils =          require('../neo4j/dbUtils'),
-  writeResponse =    require('../helpers/response').writeResponse;
+  writeResponse =    require('../helpers/response').writeResponse,
+  utils =            require('../helpers/utils');
   // writeError =      require('../helpers/response').writeError;
 
 // creates a new group node
@@ -11,6 +12,26 @@ exports.create = (req, res, next) => {
     id = Number(req.params.groupId);
 
   Groups.create(dbUtils.getSession(req), id, name)
+    .then (response => writeResponse(res, response))
+    .catch (next);
+};
+
+// joins a group node
+exports.join = (req, res, next) => {
+  var peopleId = utils.strToNumArray(_.get(req.body, 'peopleId')),
+    id = Number(req.params.groupId);
+
+  Groups.join(dbUtils.getSession(req), id, peopleId)
+    .then (response => writeResponse(res, response))
+    .catch (next);
+};
+
+// leaves a group node
+exports.leave = (req, res, next) => {
+  var peopleId = utils.strToNumArray(_.get(req.body, 'peopleId')),
+    id = Number(req.params.groupId);
+
+  Groups.leave(dbUtils.getSession(req), id, peopleId)
     .then (response => writeResponse(res, response))
     .catch (next);
 };
@@ -33,7 +54,6 @@ exports.getAll = (req, res, next) => {
 
 // deletes all Event nodes and relationships
 exports.deleteAll = (req, res, next) => {
-  console.log('delete all');
   Groups.deleteAll(dbUtils.getSession(req))
     .then(response => writeResponse(res, response))
     .catch(next);

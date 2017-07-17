@@ -56,6 +56,10 @@ router.get('/groups/:groupId', routes.groups.get);
 
 // creates
 router.put('/groups/:groupId/create', routes.groups.create);
+router.put('/groups/:groupId/join', routes.groups.join);
+
+// deletes
+router.put('/groups/:groupId/leave', routes.groups.leave);
 
 // general functions
 router.get('/groups/all/get', routes.groups.getAll);

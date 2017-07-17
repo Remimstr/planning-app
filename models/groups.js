@@ -19,7 +19,6 @@ function oneGroup(neo4jResult) {
 //  get: session, <Int>
 //  This function consumes a groupId and returns the group found.
 var get = (session, groupId) => {
-  console.log("this is groupId", groupId);
   return session.run(
     'MATCH (group:Group) WHERE group.id = {groupId} \
     RETURN DISTINCT group',
@@ -55,6 +54,45 @@ var create = (session, newGroupId, name) => {
   );
 };
 
+//  join: session, <Str>, <Str[]>
+//  This function consumes a groupId and an array
+//  of peopleId. It add each element of peopleId
+//  to the group.
+var join = (session, groupId, peopleId) => {
+  return session.run(
+    'MATCH (g:Group) WHERE g.id = {groupId} \
+    MATCH (p:Person) WHERE p.id in {peopleId} \
+    CREATE (g)-[:MEMBER]->(p) \
+    RETURN g, p',
+    {
+      groupId: groupId,
+      peopleId: peopleId
+    }
+  );
+};
+
+/**
+ * Deletion Functions 
+ */
+
+//  leave: session, <Str>, <Str[]>
+//  This function consumes a groupId and an array
+//  of peopleId. It add each element of peopleId
+//  to the group.
+var leave = (session, groupId, peopleId) => {
+  return session.run(
+    'MATCH (g:Group) WHERE g.id = {groupId} \
+    MATCH (p:Person) WHERE p.id in {peopleId} \
+    MATCH (g)-[r:MEMBER]->(p) \
+    DELETE r \
+    RETURN g, p',
+    {
+      groupId: groupId,
+      peopleId: peopleId
+    }
+  );
+};
+
 // deleteAll: session
 // Deletes all groups
 var deleteAll = (session) => {
@@ -68,5 +106,7 @@ module.exports = {
   get: get,
   getAll: getAll,
   create: create,
+  join: join,
+  leave: leave,
   deleteAll: deleteAll
 };
