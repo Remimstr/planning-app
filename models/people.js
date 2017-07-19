@@ -25,7 +25,8 @@ var get = (session, personId) => {
     {
       personId: personId
     })
-    .then(r => onePerson(r));
+    .then(r => onePerson(r))
+    .catch(() => { throw EvalError('person with id: ' + personId + ' not found');});
 };
 
 //  getAll: session
@@ -46,7 +47,7 @@ var getAll = (session) => {
 //  It creates a new person and names it.
 var create = (session, newPersonId, name) => {
   return session.run(
-    'CREATE (p:Person {id:{newPersonId}, name:{name}}) RETURN p',
+    'MERGE (p:Person {id:{newPersonId}, name:{name}}) RETURN p',
     {
       newPersonId: newPersonId,
       name: name
